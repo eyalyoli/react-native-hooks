@@ -1,8 +1,15 @@
 import React, { useReducer } from "react";
 import { useState, useEffect } from "react";
 
-export function useObjectState(defVal) {
-  const [obj, setObj] = useState(defVal);
+/**
+ * A hook that uses useState with an object
+ * @param {*} PropsWithDefaultValues object with all needed props and their initial value
+ * @returns [state, setProp] state - the state object, setProp - dispatch 
+ * changes one (given prop name & prop value) or multiple props (given an 
+ * object { prop: value, ...}) in object state
+ */
+export function useObjectState(PropsWithDefaultValues) {
+  const [obj, setObj] = useState(PropsWithDefaultValues);
 
   return [
     obj,
@@ -17,12 +24,20 @@ export function useObjectState(defVal) {
   ];
 }
 
-export function useObjectReducer(fieldsWithDefVals) {
-  const [state, dispatch] = useReducer(reducer, fieldsWithDefVals);
+/**
+ * Same as useObjectState but uses useReducer instead of useState
+ *  (better performance for complex cases)
+ * @param {*} PropsWithDefaultValues object with all needed props 
+ * and their initial value
+ * @returns [state, setProp] state - the state object, setProp - dispatch 
+ * changes one (given prop name & prop value) or multiple props (given an 
+ * object { prop: value, ...}) in object state
+ */
+export function useObjectReducer(PropsWithDefaultValues) {
+  const [state, dispatch] = useReducer(reducer, PropsWithDefaultValues);
 
   //newFieldsVal={[field_name]: [field_value], ...}
   function reducer(state, newFieldsVal) {
-    console.log("updating ", newFieldsVal);
     return { ...state, ...newFieldsVal };
   }
 
@@ -40,8 +55,14 @@ export function useObjectReducer(fieldsWithDefVals) {
   ];
 }
 
-export function useArrayState(defVal) {
-  const [arr, setArr] = useState(defVal ? defVal : []);
+/**
+ * A hook based on useState for easy management of array items
+ * @param {*} defaultValues an initial array filled with elements
+ * @returns [arr, add, remove, setArr] arr - the array state, add - dispatch to add one element to the array
+ * remove - removes element, setArr - overrides the whole array state
+ */
+export function useArrayState(defaultValues) {
+  const [arr, setArr] = useState(defaultValues ? defaultValues : []);
 
   function add(item) {
     let newArr = [];
@@ -65,4 +86,5 @@ export function useArrayState(defVal) {
   return [arr, add, remove, setArr];
 }
 
+// eslint-disable-next-line react-hooks/exhaustive-deps
 export const useEffectOnlyOnce = (func) => useEffect(func, []);
